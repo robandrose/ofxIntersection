@@ -1,4 +1,4 @@
 ofxIntersection
 ===============
 
-Helper or Intersections between lines and planes
+Helper for Intersections between lines and planes
