@@ -2,11 +2,13 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    for(int i=0;i<200;i++){
-        lines[i].set(ofPoint(ofRandomWidth(), ofRandomHeight(), ofRandom(-500,500)),ofPoint(ofRandomWidth(), ofRandomHeight(), ofRandom(-500,500)));
+    for(int i=0;i<50;i++){
+        lines[i].set(ofPoint(ofRandomWidth()-ofGetWidth()/2, ofRandomHeight()-ofGetHeight()/2, ofRandom(-500,500)),ofPoint(ofRandomWidth()-ofGetWidth()/2, ofRandomHeight()-ofGetHeight()/2, ofRandom(-500,500)));
         
     }
-    cam.setVFlip(true);
+    
+    cam.setupPerspective();
+    cam.setVFlip(false);
     
 }
 
@@ -19,23 +21,25 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
-    ofPoint mouse(ofGetMouseX(), ofGetMouseY(),0);
-    ofPoint intersect;
-    ofVec3f distance;
+    
+    ofPoint mouse(ofGetMouseX(), ofGetMouseY(),-1);
+    ofPoint mouseworld=cam.screenToWorld(mouse);
+    ofPoint mouseworld2=cam.screenToWorld(ofPoint(mouse.x, mouse.y, 1));
+    ofVec3f mousedir=mouseworld2-mouseworld;
+    mousedir.normalize();
+    ofPoint mousefinal=mouseworld+mousedir.scale(600);
     
     
     cam.begin();
-    ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
-  
-    for(int i=0;i<200;i++){
-    
+    ofSetColor(255, 255,255);
+    for(int i=0;i<50;i++){
         lines[i].draw();
-    
-        if(is.PointLineDistance(&mouse, &lines[i], &intersect, &distance)){
-            ofEllipse(intersect.x, intersect.y, intersect.z, 5,5);
+        IntersectionData* idata=is.PointLineDistance(&mousefinal, &lines[i]);
+        if(idata->isIntersection){
+            ofDrawSphere(idata->pos, 3);
             ofPushStyle();
             ofSetColor(ofColor::red);
-            ofLine(intersect.x, intersect.y, intersect.z, mouse.x, mouse.y, 0);
+            ofLine(idata->pos, mousefinal);
             ofPopStyle();
         };
     }
@@ -44,7 +48,9 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if(key=='f'){
+        ofToggleFullscreen();
+    }
 }
 
 //--------------------------------------------------------------
