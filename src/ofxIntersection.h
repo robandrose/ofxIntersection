@@ -9,7 +9,7 @@
 
 #pragma once
 #include "ofMain.h"
-
+#define EPS 1.0E-3
 
 class IntersectionData{
 public:
@@ -140,6 +140,8 @@ public:
     virtual ~ofxIntersection(){};
     
     IntersectionData* LinePlaneIntersection(Line* line, Plane* plane);
+    IntersectionData* LineLineIntersection(Line* line1, Line* line2);
+    
     IntersectionData* PointLineDistance(ofPoint* point, Line* line);
     IntersectionData* TriangleRayIntersection(Triangle* triangle, Ray* ray);
     
