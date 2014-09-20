@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    for(int i=0;i<50;i++){
+    for(int i=0;i<10;i++){
         lines[i].set(ofPoint(ofRandomWidth()-ofGetWidth()/2, ofRandomHeight()-ofGetHeight()/2, ofRandom(-500,500)),ofPoint(ofRandomWidth()-ofGetWidth()/2, ofRandomHeight()-ofGetHeight()/2, ofRandom(-500,500)));
         
     }
@@ -29,10 +29,28 @@ void ofApp::draw(){
     mousedir.normalize();
     ofPoint mousefinal=mouseworld+mousedir.scale(600);
     
-    
     cam.begin();
+    
+    
+    Line l1,l2;
+    l1.set(ofPoint(-500,-500,0), ofPoint(500,500,0));
+    l2.set(ofPoint(-500,500,300),mousefinal);
+    
+    l1.draw();
+    l2.draw();
+    
+    
+    IntersectionData* idata=is.LineLineIntersection(&l1, &l2);
+    
+    ofDrawSphere(idata->pos, 3);
+    ofLine(idata->pos, idata->pos+idata->dir);
+    ofDrawSphere(idata->pos+idata->dir,3);
+    
+    
+    /*
+    
     ofSetColor(255, 255,255);
-    for(int i=0;i<50;i++){
+    for(int i=0;i<10;i++){
         lines[i].draw();
         IntersectionData* idata=is.PointLineDistance(&mousefinal, &lines[i]);
         if(idata->isIntersection){
@@ -43,6 +61,7 @@ void ofApp::draw(){
             ofPopStyle();
         };
     }
+     */
     cam.end();
 }
 
