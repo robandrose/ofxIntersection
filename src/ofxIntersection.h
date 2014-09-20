@@ -11,10 +11,46 @@
 #include "ofMain.h"
 
 
+class IntersectionData{
+public:
+    
+    bool isIntersection;
+    float dist;
+    ofPoint pos;
+    ofVec3f dir;
+    ofVec3f normal;
+    
+    string toString(){
+        string s="isec: "+ofToString(isIntersection);
+        if(isIntersection){
+            s += " at:" + ofToString(pos) + " dist:" + ofToString(dist) + "normal:" + ofToString(normal);
+        }
+        return s;
+    }
+};
+
+
+
+class Ray{
+public:
+    void set(ofPoint _p0, ofVec3f _vec){
+        p0=_p0;
+        vec=_vec;
+    }
+    ofPoint getP0(){
+        return p0;
+    }
+    ofVec3f getVec(){
+        return vec;
+    }
+    ofPoint p0;
+    ofVec3f vec;
+};
+
+
 class Line
 {
 public:
-    
     void set(ofPoint _p0, ofPoint _p1){
         p0=_p0;
         p1=_p1;
@@ -68,10 +104,32 @@ private:
 
 class Triangle
 {
-public:
-    ofPoint v0;
-    ofPoint v1;
-    ofPoint v2;
+public :
+    void set(ofPoint _p0, ofPoint _p1, ofPoint _p2){
+        p0=_p0;
+        p1=_p1;
+        p2=_p2;
+    }
+
+    
+private:
+    ofPoint p0;
+    ofPoint p1;
+    ofPoint p2;
+    ofVec3f normal;
+    
+};
+
+class Ellipse{
+    
+};
+
+class Circle{
+    
+};
+
+class Terrain{
+    
 };
 
 
@@ -81,12 +139,13 @@ public:
     ofxIntersection();
     virtual ~ofxIntersection(){};
     
-    int LinePlaneIntersection(Line* line, Plane* plane, ofPoint* intersect);
-    int PointLineDistance(ofPoint* point, Line* line, ofPoint* intersect, ofVec3f* distance);
-    
+    IntersectionData* LinePlaneIntersection(Line* line, Plane* plane);
+    IntersectionData* PointLineDistance(ofPoint* point, Line* line);
+    IntersectionData* TriangleRayIntersection(Triangle* triangle, Ray* ray);
     
 private:
     
+    IntersectionData idata;
     
     
 };

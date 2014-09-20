@@ -13,19 +13,19 @@ ofxIntersection::ofxIntersection(){
 }
 
 
-int ofxIntersection::LinePlaneIntersection(Line* line, Plane* plane, ofPoint* intersect){
+IntersectionData* ofxIntersection::LinePlaneIntersection(Line* line, Plane* plane){
     float u=0;
     u= plane->getNormal().dot(plane->getP0()-line->getP0())/plane->getNormal().dot(line->getVec());
     if(u>1 || u<0){
-        return 0;
+        idata.isIntersection=false;
+        return &idata;
     }
-    intersect->set(line->getP0()+line->getVec()*u);
-    return 1;
+    idata.pos.set(line->getP0()+line->getVec()*u);
+    return &idata;
 }
 
 
-int ofxIntersection::PointLineDistance(ofPoint* point, Line* line, ofPoint* intersect, ofVec3f* distance){
-    
+IntersectionData* ofxIntersection::PointLineDistance(ofPoint* point, Line* line){
     float u;
     ofVec3f dist;
     
@@ -35,15 +35,16 @@ int ofxIntersection::PointLineDistance(ofPoint* point, Line* line, ofPoint* inte
     ( line->getVec().lengthSquared()));
     
     if( u < 0.0f || u > 1.0f ){
-        return 0;   // closest point does not fall within the line segment
+        idata.isIntersection=false;
+        return &idata;
     }
-
-    intersect->x = line->getP0().x + u * ( line->getVec().x );
-    intersect->y = line->getP0().y + u * ( line->getVec().y );
-    intersect->z = line->getP0().z + u * ( line->getVec().z );
     
-    distance->set(*intersect- *point);
-    
-    return 1;
+    idata.isIntersection=true;
+    idata.pos.x = line->getP0().x + u * ( line->getVec().x );
+    idata.pos.y = line->getP0().y + u * ( line->getVec().y );
+    idata.pos.z = line->getP0().z + u * ( line->getVec().z );
+    idata.dir.set(idata.pos- *point);
+ 
+    return &idata;
     
 }
