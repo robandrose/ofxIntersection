@@ -31,7 +31,6 @@ public:
 };
 
 
-
 class Ray{
 public:
     Ray(){};
@@ -145,32 +144,17 @@ public :
         seg1.set(p1, p2);
         seg2.set(p2, p0);
         
-        
         segments[0]=&seg0;
         segments[1]=&seg1;
         segments[2]=&seg2;
-        
-        
     }
     
-    ofPoint getP0(){
-        return p0;
-    }
-    ofPoint getP1(){
-        return p1;
-    }
-    ofPoint getP2(){
-        return p2;
-    }
-    Line getSeg0(){
-        return seg0;
-    }
-    Line getSeg1(){
-        return seg1;
-    }
-    Line getSeg2(){
-        return seg2;
-    }
+    ofPoint getP0(){return p0;}
+    ofPoint getP1(){return p1;}
+    ofPoint getP2(){return p2;}
+    Line getSeg0(){return seg0;}
+    Line getSeg1(){return seg1;}
+    Line getSeg2(){return seg2;}
 
     void draw(){
         ofTriangle(p0,p1,p2);
@@ -192,6 +176,10 @@ private:
 };
 
 class Ellipse{
+private:
+    ofPoint center;
+    float radiusX;
+    float radiusY;
     
 };
 
