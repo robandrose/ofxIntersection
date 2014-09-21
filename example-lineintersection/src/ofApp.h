@@ -21,6 +21,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxIntersection is;
-    Line lines[50];
+    Line lines[1000];
     ofEasyCam cam;
 };
