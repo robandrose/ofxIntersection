@@ -145,6 +145,12 @@ public :
         seg1.set(p1, p2);
         seg2.set(p2, p0);
         
+        
+        segments[0]=&seg0;
+        segments[1]=&seg1;
+        segments[2]=&seg2;
+        
+        
     }
     
     ofPoint getP0(){
@@ -180,6 +186,7 @@ private:
     Line seg1;
     Line seg2;
     
+    Line* segments[3];
     
     
 };
@@ -216,9 +223,17 @@ public:
     IntersectionData PlanePlaneIntersection(Plane& plane1, Plane& plane2);
     IntersectionData PlaneTriangleIntersection(Plane& plane, Triangle& triangle);
     
+    // Triangle
+    IntersectionData TriangleTriangleIntersection(Triangle& triangle1, Triangle& triangle2){};
+    
+    
     
     
 private:
+    
+    bool containsValue(vector<ofPoint>* points, ofPoint point);
+    
+    
     
     
     

@@ -23,4 +23,5 @@ class ofApp : public ofBaseApp{
     ofxIntersection is;
     Line lines[1000];
     ofEasyCam cam;
+    ofVec3f planenormal;
 };

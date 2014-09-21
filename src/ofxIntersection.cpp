@@ -21,6 +21,7 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
     // check if ray is paralles to plane:
     if (denom > EPS) {
         u= plane.getNormal().dot(plane.getP0()-ray.getP0())/denom;
+        idata.isIntersection=true;
         idata.pos.set(ray.getP0()+ray.getVec()*u);
         return idata;
     }else{
@@ -47,14 +48,15 @@ IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane
     float denom = plane.getNormal().dot(line.getVec());
     
     // check if ray is paralles to plane:
-    if (denom > EPS) {
+    if (fabs(denom) > EPS) {
         u= plane.getNormal().dot(plane.getP0()-line.getP0())/denom;
         
         // check if intersection is within line-segment:
-        if(u>1 || u<0){
+        if(u>1.0 || u<0){
             idata.isIntersection=false;
             return idata;
         }
+        idata.isIntersection=true;
         idata.pos.set(line.getP0()+line.getVec()*u);
         return idata;
     }else{
@@ -174,18 +176,50 @@ IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& p
 IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triangle& triangle){
     IntersectionData idata;
     
-    Line l0=triangle.getSeg0();
-    Line l1=triangle.getSeg1();
-    Line l2=triangle.getSeg2();
+    Line lines[3];
+    lines[0]=triangle.getSeg0();
+    lines[1]=triangle.getSeg1();
+    lines[2]=triangle.getSeg2();
     
-    IntersectionData id0=LinePlaneIntersection(l0, plane);
-    IntersectionData id1=LinePlaneIntersection(l1, plane);
-    IntersectionData id2=LinePlaneIntersection(l2, plane);
+    vector<ofPoint>ispoints;
+    IntersectionData id[3];
+    bool bintersects=false;
     
-    if(!id0.isIntersection && !id1.isIntersection && !id2.isIntersection ){
+    for(int i=0;i<3;i++){
+        id[i]=LinePlaneIntersection(lines[i], plane);
+        if(id[i].isIntersection){
+            bintersects=true;
+            if(!containsValue(&ispoints,id[i].pos)){
+                ispoints.push_back(id[i].pos);
+            };
+        }
+    }
+    
+    if(!bintersects){
         idata.isIntersection=false;
         return idata;
     }
     
+    
+    idata.isIntersection=true;
+    idata.pos.set(ispoints.at(0));
+    idata.dir.set(0,0,0);
+    idata.dist=0;
+    
+    if(ispoints.size()==2){
+        idata.dir.set(ispoints.at(1));
+        idata.dir-=idata.pos;
+        idata.dist=idata.dir.length();
+    }
     return idata;
+}
+
+
+bool ofxIntersection::containsValue(vector<ofPoint> *points, ofPoint point){
+    for(int i=0;i<points->size();i++){
+        if((points->at(i)-point).length()<EPS ){
+            return true;
+        }
+    }
+    return false;
 }
