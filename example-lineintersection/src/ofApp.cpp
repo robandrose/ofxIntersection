@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
    
-    for(int i=0;i<1000;i++){
+    for(int i=0;i<10000;i++){
         lines[i].set(ofPoint(ofRandomWidth()-ofGetWidth()/2, ofRandomHeight()-ofGetHeight()/2, ofRandom(-500,500)),ofPoint(ofRandomWidth()-ofGetWidth()/2, ofRandomHeight()-ofGetHeight()/2, ofRandom(-500,500)));
         
     }
@@ -69,22 +69,24 @@ void ofApp::draw(){
     
     
     
+    /*
     ofSetColor(255, 255,255);
     for(int i=0;i<1000;i++){
         lines[i].draw();
         idata=is.LinePlaneIntersection(lines[i], p1);
         if(idata.isIntersection){
-            ofDrawSphere(idata.pos, 2);
+            ofRect(idata.pos, 2,2);
         }
         idata=is.PointLineDistance(mousefinal, lines[i]);
         if(idata.isIntersection){
-            ofDrawSphere(idata.pos, 3);
+            ofRect(idata.pos, 3,3);
             ofPushStyle();
             ofSetColor(ofColor::red);
             ofLine(idata.pos, mousefinal);
             ofPopStyle();
         };
     }
+     */
     
     
    cam.end();

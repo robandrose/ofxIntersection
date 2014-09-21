@@ -83,10 +83,11 @@ public:
         ofLine(p0,p1);
     }
 
-protected:
     ofPoint p0;
     ofPoint p1;
     ofVec3f vec;
+protected:
+
     
 };
 
@@ -210,6 +211,8 @@ public:
     // Plane
     IntersectionData PlanePlaneIntersection(Plane& plane1, Plane& plane2);
     IntersectionData PlaneTriangleIntersection(Plane& plane, Triangle& triangle);
+    float PointPlaneDistance(ofPoint& point, Plane& plane);
+    
     
     // Triangle
     IntersectionData TriangleTriangleIntersection(Triangle& triangle1, Triangle& triangle2){};

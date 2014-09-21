@@ -31,11 +31,15 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
     
 }
 
-IntersectionData RayTriangleIntersection(Triangle& triangle, Ray& ray){
+IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ray& ray){
     
 }
 
 
+
+float ofxIntersection::PointPlaneDistance(ofPoint &point, Plane &plane){
+    return  plane.getNormal().dot((point-plane.getP0()));
+}
 
 
 
@@ -43,6 +47,11 @@ IntersectionData RayTriangleIntersection(Triangle& triangle, Ray& ray){
 
 IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane){
     IntersectionData idata;
+   
+    if(ofSign(PointPlaneDistance(line.p0, plane))==ofSign(PointPlaneDistance(line.p1, plane))){
+        idata.isIntersection=false;
+        return idata;
+    };
     
     float u=0;
     float denom = plane.getNormal().dot(line.getVec());

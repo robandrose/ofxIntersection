@@ -21,7 +21,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxIntersection is;
-    Line lines[1000];
+    Line lines[10000];
     ofEasyCam cam;
     ofVec3f planenormal;
 };
