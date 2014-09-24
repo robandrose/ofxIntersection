@@ -14,6 +14,13 @@
 
 class IntersectionData{
 public:
+    IntersectionData(){
+        isIntersection=true;
+        dist=0;
+        pos.set(0,0,0);
+        dir.set(0,0,0);
+        normal.set(0,0,0);
+    }
     
     bool isIntersection;
     float dist;
@@ -24,7 +31,7 @@ public:
     string toString(){
         string s="isec: "+ofToString(isIntersection);
         if(isIntersection){
-            s += " at:" + ofToString(pos) + " dist:" + ofToString(dist) + "normal:" + ofToString(normal);
+            s += " at:" + ofToString(pos) +" dir:"+ofToString(dir)+ " dist:" + ofToString(dist) + "normal:" + ofToString(normal);
         }
         return s;
     }
@@ -97,18 +104,34 @@ public:
     Plane(ofPoint _p0, ofVec3f _normal){
         set(_p0, _normal);
     }
-    
     void set(ofPoint _p0, ofVec3f _normal){
         p0=_p0;
         normal=_normal;
         normal.normalize();
     }
+    void set(ofPoint _p0, ofPoint _p1, ofPoint _p2){
+        ofVec3f seg0, seg1;
+        seg0.set(_p1-_p0);
+        seg1.set(_p2-_p0);
+        seg0.cross(seg1);
+        normal.set(seg0.cross(seg1));
+        normal.normalize();
+        p0.set(_p0);
+        
+    }
+    
     ofPoint getP0(){
         return p0;
     }
     ofVec3f getNormal(){
         return normal;
     }
+    
+    float getDCoeff(){
+        return p0.dot(normal);
+    }
+    
+    
     
     void draw(){
         ofQuaternion rot;
@@ -173,6 +196,11 @@ private:
     
     Line* segments[3];
     
+    
+};
+
+
+class Rectangle{
     
 };
 

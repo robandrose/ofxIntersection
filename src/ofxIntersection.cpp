@@ -47,7 +47,6 @@ float ofxIntersection::PointPlaneDistance(ofPoint &point, Plane &plane){
 
 IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane){
     IntersectionData idata;
-   
     if(ofSign(PointPlaneDistance(line.p0, plane))==ofSign(PointPlaneDistance(line.p1, plane))){
         idata.isIntersection=false;
         return idata;
@@ -177,7 +176,29 @@ IntersectionData ofxIntersection::PointLineDistance(ofPoint& point, Line& line){
 IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& plane2){
     IntersectionData idata;
     
+    // Check if planes are parallel, if so return false:
+    ofVec3f dir=plane1.getNormal().cross(plane2.getNormal());
     
+    if(dir.length() < EPS){
+        idata.isIntersection=false;
+        return idata;
+    }
+    
+    idata.isIntersection=true;
+    
+    // Direction of intersection is the cross product of the two normals:
+    dir.normalize();
+    idata.dir=dir;
+    
+    float d1 = plane1.getDCoeff();
+    float d2 = plane2.getDCoeff();
+    float offDiagonal = plane1.getNormal().dot(plane2.getNormal());
+    double det = 1.0 / (1.0 - offDiagonal * offDiagonal);
+    double a = (d1 - d2 * offDiagonal) * det;
+    double b = (d2 - d1 * offDiagonal) * det;
+    
+    idata.pos=plane1.getNormal().scale(a);
+    idata.pos+=plane2.getNormal().scale(b);
     
     return idata;
 }
