@@ -38,9 +38,25 @@ void ofApp::draw(){
     
     cam.begin();
     
-    Plane p1;
-    p1.set(ofPoint(0,0,0), planenormal);
+    Plane p1, p2;
     
+    p1.set(ofPoint(0,0,0), planenormal);
+    ofVec3f n2=planenormal;
+    n2.rotate(30, ofVec3f(1,0,0));
+    p2.set(ofPoint(0,300,0), n2);
+    
+    IntersectionData id=is.PlanePlaneIntersection(p1, p2);
+    ofSetColor(255, 0, 0,100);
+    p1.draw();
+    p2.draw();
+    
+    cout << id.toString()<<"\n";
+        if(id.isIntersection){
+        ofSetColor(255,255,0);
+        ofLine(id.pos-id.dir.scale(500), id.pos+id.dir.scale(500));
+    }
+    
+    /*
     Line l1;
     l1.set(ofPoint(-200,-300,-500), ofPoint(300,300,300));
     l1.draw();
@@ -67,7 +83,7 @@ void ofApp::draw(){
         ofDrawBox(idata.pos, 3);
     }
     
-    
+    */
     
     /*
     ofSetColor(255, 255,255);
