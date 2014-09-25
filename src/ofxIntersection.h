@@ -238,6 +238,8 @@ public:
     
     // Plane
     IntersectionData PlanePlaneIntersection(Plane& plane1, Plane& plane2);
+    IntersectionData PlanePlanePlaneIntersection(Plane& plane1, Plane& plane2, Plane& plane3);
+    
     IntersectionData PlaneTriangleIntersection(Plane& plane, Triangle& triangle);
     float PointPlaneDistance(ofPoint& point, Plane& plane);
     
