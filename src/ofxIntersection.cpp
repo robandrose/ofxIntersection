@@ -80,10 +80,12 @@ IntersectionData ofxIntersection::LineLineIntersection(Line& line1, Line& line2)
     IntersectionData idata;
     
     ofPoint p13,p43,p21;
+    
     ofPoint p1=line1.getP0();
     ofPoint p2=line1.getP1();
     ofPoint p3=line2.getP0();
     ofPoint p4=line2.getP1();
+    
     
     double d1343,d4321,d1321,d4343,d2121;
     double numer,denom;
@@ -191,15 +193,15 @@ IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triang
     lines[2]=triangle.getSeg2();
     
     vector<ofPoint>ispoints;
-    IntersectionData id[3];
     bool bintersects=false;
+    IntersectionData id;
     
     for(int i=0;i<3;i++){
-        id[i]=LinePlaneIntersection(lines[i], plane);
-        if(id[i].isIntersection){
+        id=LinePlaneIntersection(lines[i], plane);
+        if(id.isIntersection){
             bintersects=true;
-            if(!containsValue(&ispoints,id[i].pos)){
-                ispoints.push_back(id[i].pos);
+            if(!containsValue(&ispoints,id.pos)){
+                ispoints.push_back(id.pos);
             };
         }
     }
@@ -208,6 +210,7 @@ IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triang
         idata.isIntersection=false;
         return idata;
     }
+    
     
     
     idata.isIntersection=true;
@@ -220,6 +223,7 @@ IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triang
         idata.dir-=idata.pos;
         idata.dist=idata.dir.length();
     }
+    
     return idata;
 }
 
