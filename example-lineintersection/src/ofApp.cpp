@@ -55,18 +55,18 @@ void ofApp::draw(){
     
     ofSetColor(255, 0, 0,100);
     p1.draw();
-    p2.draw();
+    
+    /*p2.draw();
     p3.draw();
-    
-    
+    */
+    /*
     if(id2.isIntersection){
         ofSetColor(ofColor::yellow);
         ofDrawBox(id2.pos,5);
     }
     
+    */
     
-    
-    /*
     Line l1;
     l1.set(ofPoint(-200,-300,-500), ofPoint(300,300,300));
     l1.draw();
@@ -93,9 +93,9 @@ void ofApp::draw(){
         ofDrawBox(idata.pos, 3);
     }
     
-    */
     
-    /*
+    
+    
     ofSetColor(255, 255,255);
     for(int i=0;i<1000;i++){
         lines[i].draw();
@@ -112,7 +112,6 @@ void ofApp::draw(){
             ofPopStyle();
         };
     }
-     */
     
     
    cam.end();
