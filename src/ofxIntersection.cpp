@@ -190,56 +190,42 @@ IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& p
     
     // Direction of intersection is the cross product of the two normals:
     dir.normalize();
+    Plane plane3;
+    plane3.set(ofPoint(0,0,0), dir);
+    
+    IntersectionData id=PlanePlanePlaneIntersection(plane1, plane2, plane3);
+    
+    idata.pos.set(id.pos);
     idata.dir=dir;
-    
-    float d1 = plane1.getDCoeff();
-    float d2 = plane2.getDCoeff();
-    float offDiagonal = plane1.getNormal().dot(plane2.getNormal());
-    double det = 1.0 / (1.0 - offDiagonal * offDiagonal);
-    double a = (d1 - d2 * offDiagonal) * det;
-    double b = (d2 - d1 * offDiagonal) * det;
-    
-    idata.pos=plane1.getNormal().scale(a);
-    idata.pos+=plane2.getNormal().scale(b);
-    
     return idata;
 }
 
 IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Plane &plane2, Plane &plane3){
-    // coefficients of the three planes linear equations
-    // http://commons.apache.org/proper/commons-math/javadocs/api-3.3/src-html/org/apache/commons/math3/geometry/euclidean/threed/Plane.html#line.411
-    
+
     IntersectionData idata;
     
-    /*
-         double a1 = plane1.getNormal().x;
-         double b1 = plane1.getNormal().y;
-         double c1 = plane1.getNormal().z;
-        double d1 = plane1.originOffset;
+    float d1=plane1.getDCoeff();
+    float d2=plane2.getDCoeff();
+    float d3=plane3.getDCoeff();
     
-         double a2 = plane2.getNormal().x;
-         double b2 = plane2.getNormal().y;
-         double c2 = plane2.getNormal().z;
-         double d2 = plane2.originOffset;
+    ofVec3f n1=plane1.getNormal();
+    ofVec3f n2=plane2.getNormal();
+    ofVec3f n3=plane3.getNormal();
     
-         double a3 = plane3.getNormal().x;
-         double b3 = plane3.getNormal().y;
-         double c3 = plane3.getNormal().z;
-         double d3 = plane3.originOffset;
     
-        // direct Cramer resolution of the linear system
-        // (this is still feasible for a 3x3 system)
-         double a23         = b2 * c3 - b3 * c2;
-         double b23         = c2 * a3 - c3 * a2;
-         double c23         = a2 * b3 - a3 * b2;
-         double determinant = a1 * a23 + b1 * b23 + c1 * c23;
-        if (fabs(determinant) < 1.0e-10) {
-            return idata;
-            }
+    float denom=n1.dot(n2.cross(n3));
+    cout << denom<<"\n";
+    if(denom<EPS){
+        idata.isIntersection=false;
+        return idata;
+    }
     
-        double r = 1.0 / determinant;
-        idata.pos.set((-a23 * d1 - (c1 * b3 - c3 * b1) * d2 - (c2 * b1 - c1 * b2) * d3) * r,(-b23 * d1 - (c3 * a1 - c1 * a3) * d2 - (c1 * a2 - c2 * a1) * d3) * r,(-c23 * d1 - (b1 * a3 - b3 * a1) * d2 - (b2 * a1 - b1 * a2) * d3) * r);
-    */
+    
+    ofVec3f isp=d1*(n2.cross(n3))+d2*(n3.cross(n1))+d3*(n1.cross(n2));
+    isp/=-denom;
+    
+    idata.isIntersection=true;
+    idata.pos.set(isp);
     return idata;
     
 }

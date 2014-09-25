@@ -26,7 +26,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
-    planenormal.rotate(0.1, ofVec3f(1,1,0));
+    //planenormal.rotate(0.1, ofVec3f(1,1,0));
     
     
     ofPoint mouse(ofGetMouseX(), ofGetMouseY(),-1);
@@ -38,23 +38,33 @@ void ofApp::draw(){
     
     cam.begin();
     
-    Plane p1, p2;
+    Plane p1, p2,p3;
+    ofVec3f n1, n2, n3;
     
-    p1.set(ofPoint(0,0,0), planenormal);
-    ofVec3f n2=planenormal;
+    n1.set(1, 1,1);
+    n2.set(n1);
+    n3.set(n1);
     n2.rotate(30, ofVec3f(1,0,0));
-    p2.set(ofPoint(0,300,0), n2);
+    n3.rotate(60, ofVec3f(1,0,0));
     
-    IntersectionData id=is.PlanePlaneIntersection(p1, p2);
+    p1.set(ofPoint(0,0,0), n1);
+    p2.set(ofPoint(ofGetMouseX(),0,0), n2);
+    p3.set(ofPoint(0,0,ofGetMouseY()),n3);
+    
+    IntersectionData id2=is.PlanePlanePlaneIntersection(p1, p2, p3);
+    
     ofSetColor(255, 0, 0,100);
     p1.draw();
     p2.draw();
+    p3.draw();
     
-    cout << id.toString()<<"\n";
-        if(id.isIntersection){
-        ofSetColor(255,255,0);
-        ofLine(id.pos-id.dir.scale(500), id.pos+id.dir.scale(500));
+    
+    if(id2.isIntersection){
+        ofSetColor(ofColor::yellow);
+        ofDrawBox(id2.pos,5);
     }
+    
+    
     
     /*
     Line l1;

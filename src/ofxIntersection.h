@@ -128,19 +128,16 @@ public:
     }
     
     float getDCoeff(){
-        return p0.dot(normal);
+        return normal.dot(p0);
     }
-    
-    
-    
+
     void draw(){
         ofQuaternion rot;
-        rot.makeRotate(ofVec3f(0,0,1), getNormal());
+        rot.makeRotate(ofVec3f(0,0,1), this->getNormal());
         ofPushMatrix();
         ofMatrix4x4 rotmat;
         rot.get(rotmat);
         ofMultMatrix(rotmat);
-        
         ofDrawPlane(p0, 1000, 1000);
         ofPopMatrix();
     }
