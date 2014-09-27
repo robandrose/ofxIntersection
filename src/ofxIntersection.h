@@ -104,11 +104,6 @@ public:
     Plane(ofPoint _p0, ofVec3f _normal){
         set(_p0, _normal);
     }
-    void set(ofPoint _p0, ofVec3f _normal){
-        p0=_p0;
-        normal=_normal;
-        normal.normalize();
-    }
     void set(ofPoint _p0, ofPoint _p1, ofPoint _p2){
         ofVec3f seg0, seg1;
         seg0.set(_p1-_p0);
@@ -116,9 +111,14 @@ public:
         seg0.cross(seg1);
         normal.set(seg0.cross(seg1));
         normal.normalize();
-        p0.set(_p0);
-        
+        set(normal, _p0);
     }
+    void set(ofPoint _p0, ofVec3f _normal){
+        p0=_p0;
+        normal=_normal;
+        normal.normalize();
+    }
+    
     
     ofPoint getP0(){
         return p0;
@@ -134,17 +134,23 @@ public:
     void draw(){
         ofQuaternion rot;
         rot.makeRotate(ofVec3f(0,0,1), this->getNormal());
-        ofPushMatrix();
         ofMatrix4x4 rotmat;
         rot.get(rotmat);
+        ofPushMatrix();
+        ofTranslate(p0);
+        ofPushMatrix();
         ofMultMatrix(rotmat);
-        ofDrawPlane(p0, 1000, 1000);
+        ofDrawPlane(500, 500);
+        ofPopMatrix();
         ofPopMatrix();
     }
+   
     
 private:
     ofPoint p0;
     ofVec3f normal;
+    
+    
 };
 
 

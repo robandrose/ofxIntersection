@@ -23,5 +23,6 @@ class ofApp : public ofBaseApp{
     ofxIntersection is;
     Line lines[10000];
     ofEasyCam cam;
-    ofVec3f planenormal;
+    ofVec3f n1,n2,n3;
+    Plane p1, p2,p3;
 };

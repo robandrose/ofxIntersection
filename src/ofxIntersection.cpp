@@ -173,10 +173,17 @@ IntersectionData ofxIntersection::PointLineDistance(ofPoint& point, Line& line){
 
 
 /************** Plane  ************/
+// http://stackoverflow.com/questions/6408670/intersection-between-two-planes/6412105#6412105
+// http://en.wikipedia.org/wiki/Plane_%28geometry%29
 
 
 IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& plane2){
     IntersectionData idata;
+    
+    ofVec3f n1=plane1.getNormal();
+    ofVec3f n2=plane2.getNormal();
+    float d1=plane1.getDCoeff();
+    float d2=plane2.getDCoeff();
     
     // Check if planes are parallel, if so return false:
     ofVec3f dir=plane1.getNormal().cross(plane2.getNormal());
@@ -186,22 +193,42 @@ IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& p
         return idata;
     }
     
-    idata.isIntersection=true;
     
+    idata.isIntersection=true;
     // Direction of intersection is the cross product of the two normals:
     dir.normalize();
-    Plane plane3;
-    plane3.set(ofPoint(0,0,0), dir);
     
-    IntersectionData id=PlanePlanePlaneIntersection(plane1, plane2, plane3);
     
-    idata.pos.set(id.pos);
+    
+    float offDiagonal = n1.dot(n2);
+    double det = 1.0 / (1 - offDiagonal * offDiagonal);
+    double a = (d1 - d2 * offDiagonal) * det;
+    double b = (d2 - d1 * offDiagonal) * det;
+    ofVec3f anchor = n1.scale((float) a)+n2.scale((float) b);
+    
+    idata.pos=anchor;
     idata.dir=dir;
+    /*
+    // not working! Damn it!
+    
+    // From p.bourke:
+    float det= ( n1.dot(n1) )*( n2.dot(n2) )-( n1.dot(n2) )*( n1.dot(n2) );
+    float c1 = d1*(n2.dot(n2))-d2*(n1.dot(n2));
+    float c2 = d2*(n1.dot(n1))-d2*(n1.dot(n2));
+    // but what to do with c1 and c2?
+    cout <<" c1:"<< c1 << " c2:" << c2 << "\n";
+    
+    idata.pos.set(n1.scale(c1)+n2.scale(c2));    
+    idata.dir=dir;
+    */
     return idata;
 }
 
+
+
 IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Plane &plane2, Plane &plane3){
 
+    
     IntersectionData idata;
     
     float d1=plane1.getDCoeff();
@@ -212,20 +239,14 @@ IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Pla
     ofVec3f n2=plane2.getNormal();
     ofVec3f n3=plane3.getNormal();
     
+    float det=n1.dot(n2.cross(n3));
     
-    float denom=n1.dot(n2.cross(n3));
-    cout << denom<<"\n";
-    if(denom<EPS){
+    if(det<EPS){
         idata.isIntersection=false;
         return idata;
     }
-    
-    
-    ofVec3f isp=d1*(n2.cross(n3))+d2*(n3.cross(n1))+d3*(n1.cross(n2));
-    isp/=-denom;
-    
     idata.isIntersection=true;
-    idata.pos.set(isp);
+    idata.pos= ( -d1*n2.cross(n3)  -d2*n3.cross(n1) -d3*n1.cross(n2) ) / det ;
     return idata;
     
 }
