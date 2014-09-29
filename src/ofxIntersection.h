@@ -100,7 +100,11 @@ protected:
 
 class Plane{
 public:
-    Plane(){};
+    Plane(){
+        p0.set(0,0,0);
+        normal.set(0,0,1);
+        
+    };
     Plane(ofPoint _p0, ofVec3f _normal){
         set(_p0, _normal);
     }
@@ -140,7 +144,7 @@ public:
         ofTranslate(p0);
         ofPushMatrix();
         ofMultMatrix(rotmat);
-        ofDrawPlane(2000, 2000);
+        ofDrawPlane(1000, 1000);
         ofPopMatrix();
         ofPopMatrix();
     }

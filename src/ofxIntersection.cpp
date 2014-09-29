@@ -19,7 +19,7 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
     float denom = plane.getNormal().dot(ray.getVec());
 
     // check if ray is paralles to plane:
-    if (denom > EPS) {
+    if (fabs(denom) > EPS) {
         u= plane.getNormal().dot(plane.getP0()-ray.getP0())/denom;
         idata.isIntersection=true;
         idata.pos.set(ray.getP0()+ray.getVec()*u);
@@ -38,7 +38,7 @@ IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ra
 
 
 float ofxIntersection::PointPlaneDistance(ofPoint &point, Plane &plane){
-    return  plane.getNormal().dot((point-plane.getP0()));
+    return plane.getNormal().dot((point-plane.getP0()));
 }
 
 
@@ -47,7 +47,13 @@ float ofxIntersection::PointPlaneDistance(ofPoint &point, Plane &plane){
 
 IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane){
     IntersectionData idata;
-    if(ofSign(PointPlaneDistance(line.p0, plane))==ofSign(PointPlaneDistance(line.p1, plane))){
+    
+    float dist1=PointPlaneDistance(line.p0, plane);
+    float dist2=PointPlaneDistance(line.p1, plane);
+    int pos1=ofSign(dist1);
+    int pos2=ofSign(dist2);
+    
+    if(pos1==pos2){
         idata.isIntersection=false;
         return idata;
     };
@@ -56,9 +62,9 @@ IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane
     float denom = plane.getNormal().dot(line.getVec());
     
     // check if ray is paralles to plane:
+    
     if (fabs(denom) > EPS) {
         u= plane.getNormal().dot(plane.getP0()-line.getP0())/denom;
-        
         // check if intersection is within line-segment:
         if(u>1.0 || u<0){
             idata.isIntersection=false;
