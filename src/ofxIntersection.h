@@ -140,7 +140,7 @@ public:
         ofTranslate(p0);
         ofPushMatrix();
         ofMultMatrix(rotmat);
-        ofDrawPlane(500, 500);
+        ofDrawPlane(2000, 2000);
         ofPopMatrix();
         ofPopMatrix();
     }

@@ -25,4 +25,8 @@ class ofApp : public ofBaseApp{
     ofEasyCam cam;
     ofVec3f n1,n2,n3;
     Plane p1, p2,p3;
+    
+    ofLight light1;
+    ofMaterial mat1;
+    
 };

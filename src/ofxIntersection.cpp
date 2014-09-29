@@ -173,8 +173,6 @@ IntersectionData ofxIntersection::PointLineDistance(ofPoint& point, Line& line){
 
 
 /************** Plane  ************/
-// http://stackoverflow.com/questions/6408670/intersection-between-two-planes/6412105#6412105
-// http://en.wikipedia.org/wiki/Plane_%28geometry%29
 
 
 IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& plane2){
@@ -193,34 +191,20 @@ IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& p
         return idata;
     }
     
-    
     idata.isIntersection=true;
     // Direction of intersection is the cross product of the two normals:
     dir.normalize();
     
-    
-    
+    // Thank you Toxi!
     float offDiagonal = n1.dot(n2);
     double det = 1.0 / (1 - offDiagonal * offDiagonal);
     double a = (d1 - d2 * offDiagonal) * det;
     double b = (d2 - d1 * offDiagonal) * det;
     ofVec3f anchor = n1.scale((float) a)+n2.scale((float) b);
     
+    
     idata.pos=anchor;
     idata.dir=dir;
-    /*
-    // not working! Damn it!
-    
-    // From p.bourke:
-    float det= ( n1.dot(n1) )*( n2.dot(n2) )-( n1.dot(n2) )*( n1.dot(n2) );
-    float c1 = d1*(n2.dot(n2))-d2*(n1.dot(n2));
-    float c2 = d2*(n1.dot(n1))-d2*(n1.dot(n2));
-    // but what to do with c1 and c2?
-    cout <<" c1:"<< c1 << " c2:" << c2 << "\n";
-    
-    idata.pos.set(n1.scale(c1)+n2.scale(c2));    
-    idata.dir=dir;
-    */
     return idata;
 }
 
@@ -239,14 +223,20 @@ IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Pla
     ofVec3f n2=plane2.getNormal();
     ofVec3f n3=plane3.getNormal();
     
-    float det=n1.dot(n2.cross(n3));
+    ofVec3f cross1=n2.crossed(n3);
+    ofVec3f cross2=n3.crossed(n1);
+    ofVec3f cross3=n1.crossed(n2);
     
-    if(det<EPS){
+    float det=n1.dot(cross1);
+    
+    if(fabs(det)<EPS){
         idata.isIntersection=false;
         return idata;
     }
+
     idata.isIntersection=true;
-    idata.pos= ( -d1*n2.cross(n3)  -d2*n3.cross(n1) -d3*n1.cross(n2) ) / det ;
+    idata.pos=  (d1*cross1+d2*cross2+d3*cross3)/det;
+    
     return idata;
     
 }
@@ -277,8 +267,6 @@ IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triang
         idata.isIntersection=false;
         return idata;
     }
-    
-    
     
     idata.isIntersection=true;
     idata.pos.set(ispoints.at(0));
