@@ -5,10 +5,10 @@ void ofApp::setup(){
  
    
     cam.setupPerspective();
-    cam.setVFlip(false);
+    cam.setVFlip(true);
     ofEnableAlphaBlending();
     
-    triangle1.set(ofPoint(-100,-200,-50), ofPoint(200,300,100),ofPoint(0,200,30));
+    triangle1.set(ofPoint(-100,-500,-200), ofPoint(200,300,100),ofPoint(-300,200,30));
     
     
 }
@@ -32,20 +32,14 @@ void ofApp::draw(){
     
     ofPoint mousefinal=mouseworld+mousedir*600;
     
-    
-    ray1.set(mouseworld, mousedir);
-    
-    ofPushMatrix();
-    ofTranslate(200,200);
-    ray1.draw();
-    triangle1.draw();
-    ofPopMatrix();
+    ray1.set((ofPoint(-500,-300, 0)),  ofVec3f(1,.5,-.20));
     
     cam.begin();
     
     ray1.draw();
     IntersectionData id1=is.RayTriangleIntersection(triangle1, ray1);
     
+    cout << id1.isIntersection <<"\n";
     
     
     if(id1.isIntersection){

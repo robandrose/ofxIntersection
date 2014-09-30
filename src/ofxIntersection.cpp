@@ -34,12 +34,40 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
 
 IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ray& ray){
     
-    // Not working yet! but coming very soon! 30.9.2014 MR
-    
-    
     IntersectionData idata;
     idata.isIntersection=false;
     
+    
+    ofVec3f n = triangle.getNormal();
+    float dotprod = n.dot(ray.getVec());
+    
+    
+    cout << dotprod <<"\n";
+    // Why dotprod >0 when toxi had dotprod<0? furhter examinations needed!
+    
+    if (dotprod > 0) {
+        ofVec3f rt = ray.getP0()-triangle.getP0();
+        cout << rt <<"\n";
+        double t = -(double) (n.x * rt.x + n.y * rt.y + n.z * rt.z) / (n.x * ray.getVec().x + n.y * ray.getVec().y + n.z * ray.getVec().z);
+        cout << "t="<<t<<"\n";
+        if (t >= EPS) {
+            ofVec3f pos = ray.getPointAtDistance((float) t);
+            cout << "pos:"<<pos <<"\n";
+            // check if pos is inside triangle
+            if (triangle.containsPoint(pos)) {
+                idata.isIntersection = true;
+                idata.pos = pos;
+                idata.normal = n;
+                idata.dist = (float) t;
+                idata.dir = idata.pos-(ray.getP0()).normalize();
+            }
+        }
+    }
+    
+    return idata;
+    
+    
+    /*
     
     ofVec3f    u, v, n;              // triangle vectors
     ofVec3f    dir, w0, w;           // ray vectors
@@ -115,6 +143,8 @@ IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ra
     
     idata.isIntersection=true;
     return idata; // I is in T
+    
+    */
 }
 
 

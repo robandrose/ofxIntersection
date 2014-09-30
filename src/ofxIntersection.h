@@ -54,11 +54,18 @@ public:
     ofVec3f getVec(){
         return vec;
     }
+    
+    
+    ofVec3f getPointAtDistance(float dist){
+        return p0+vec.getScaled(dist);
+    }
+    
+    
     ofPoint p0;
     ofVec3f vec;
     
     void draw(){
-        ofLine(p0,p0+vec.scale(2000));
+        ofLine(p0,p0+vec.getScaled(1000));
     }
 };
 
@@ -182,6 +189,36 @@ public :
         segments[0]=&seg0;
         segments[1]=&seg1;
         segments[2]=&seg2;
+        
+        computeNormal();
+        
+    }
+    
+    bool containsPoint(ofPoint p){
+        ofVec3f v0 = p2-p0;
+        ofVec3f v1 = p1-p0;
+        ofVec3f v2 = p-p0;
+        
+        // Compute dot products
+        float dot00 = v0.dot(v0);
+        float dot01 = v0.dot(v1);
+        float dot02 = v0.dot(v2);
+        float dot11 = v1.dot(v1);
+        float dot12 = v1.dot(v2);
+        
+        // Compute barycentric coordinates
+        float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
+        float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+        
+        // Check if point is in triangle
+        return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0);
+        
+    }
+    
+    ofVec3f computeNormal(){
+         normal = seg0.vec.getCrossed(seg2.vec).normalize();
+        return normal;
     }
     
     ofPoint getP0(){return p0;}
@@ -191,6 +228,9 @@ public :
     Line getSeg1(){return seg1;}
     Line getSeg2(){return seg2;}
 
+    ofVec3f getNormal(){
+        return normal;
+    }
     void draw(){
         ofTriangle(p0,p1,p2);
     }
