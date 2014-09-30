@@ -21,12 +21,11 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxIntersection is;
-    Triangle triangle1;
     Triangle triangles[50];
-    Ray ray1;
+    Ray ray;
     
     ofEasyCam cam;
-    ofLight light1;
-    ofMaterial mat1;
     
+    ofLight light;
+    ofMaterial mat;
 };

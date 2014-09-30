@@ -3,16 +3,18 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
  
-   
+
+    
+    
     cam.setupPerspective();
     cam.setVFlip(false);
     ofEnableAlphaBlending();
     
-    triangle1.set(ofPoint(-100,-500,50), ofPoint(200,300,50),ofPoint(-300,200,30));
-    
     for(int i=0;i<50;i++){
         triangles[i].setRandom(ofPoint(ofRandom(-500,500),ofRandom(-500,500),ofRandom(-500,500)), ofRandom(50,200));
     }
+    
+    
 }
 
 //--------------------------------------------------------------
@@ -32,16 +34,15 @@ void ofApp::draw(){
     mousedir.normalize();
     
     ofPoint mousefinal=mouseworld+mousedir*600;
-    ray1.set((ofPoint(-300,-300, 0)),  ofVec3f(1,.5,-.20));
-    ray1.set(mouseworld, mousedir);
+    ray.set(mouseworld, mousedir);
     
     cam.begin();
     ofSetColor(255, 0, 0);
-    
-    ray1.draw();
+    ray.draw();
+    mat.begin();
     IntersectionData id;
     for(int i=0;i<50;i++){
-        id=is.RayTriangleIntersection(triangles[i], ray1);
+        id=is.RayTriangleIntersection(triangles[i], ray);
         if(id.isIntersection){
             ofSetColor(255, 0, 0);
             ofDrawSphere(id.pos,5);
@@ -51,6 +52,7 @@ void ofApp::draw(){
         }
         triangles[i].draw();
     }
+    mat.end();
     cam.end();
 }
 
@@ -58,6 +60,11 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key=='f'){
         ofToggleFullscreen();
+    }
+    if(key=='r'){
+        for(int i=0;i<50;i++){
+            triangles[i].setRandom(ofPoint(ofRandom(-500,500),ofRandom(-500,500),ofRandom(-500,500)), ofRandom(50,200));
+        }
     }
 }
 
