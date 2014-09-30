@@ -56,6 +56,10 @@ public:
     }
     ofPoint p0;
     ofVec3f vec;
+    
+    void draw(){
+        ofLine(p0,p0+vec.scale(2000));
+    }
 };
 
 

@@ -15,6 +15,7 @@ ofxIntersection::ofxIntersection(){
 /************** Ray  ************/
 IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
     IntersectionData idata;
+    
     float u=0;
     float denom = plane.getNormal().dot(ray.getVec());
 
@@ -33,6 +34,87 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
 
 IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ray& ray){
     
+    // Not working yet! but coming very soon! 30.9.2014 MR
+    
+    
+    IntersectionData idata;
+    idata.isIntersection=false;
+    
+    
+    ofVec3f    u, v, n;              // triangle vectors
+    ofVec3f    dir, w0, w;           // ray vectors
+    float     r, a, b;              // params to calc ray-plane intersect
+    
+    // get triangle edge vectors and plane normal
+    u= triangle.getSeg0().vec;
+    v =triangle.getSeg2().vec;
+    n = u.cross(v); // cross product
+    
+    if (n.length() == 0){// triangle is degenerate
+        cout << "triangle degenerate \n";
+        return idata;
+    }
+    
+    dir = ray.vec;            // ray direction vector
+    w0 = ray.getP0() - triangle.getP0();
+    a = -n.dot(w0);
+    b = -n.dot(dir);
+    
+    if (fabs(b) < EPS) {     // ray is  parallel to triangle plane
+        cout << "ray is  parallel to triangle plane \n";
+        
+        if (a == 0){                 // ray lies in triangle plane
+            cout << "ray lies in triangle plane \n";
+            
+            return idata;
+            
+        }
+        else {
+            cout << "ray disjoint from plane \n";
+            
+            return idata;   // ray disjoint from plane
+        }
+    }
+    
+    
+    // get intersect point of ray with triangle plane
+    r = a / b;
+    if (r < 0.0){                   // ray goes away from triangle
+        cout << r <<" ";
+        cout << "ray goes away from triangle\n";
+        
+        return idata;                 // => no intersect
+    }
+    
+    // for a segment, also test if (r > 1.0) => no intersect
+    
+    idata.pos = ray.getP0() + r * dir;            // intersect point of ray and plane
+    
+    // is I inside T?
+    float    uu, uv, vv, wu, wv, D;
+    uu = u.dot(u);
+    uv = u.dot(v);
+    vv = v.dot(v);
+    w = idata.pos - triangle.getP0();
+    wu = w.dot(u);
+    wv = w.dot(v);
+    D = uv * uv - uu * vv;
+    
+    // get and test parametric coords
+    float s, t;
+    s = (uv * wv - vv * wu) / D;
+    if (s < 0.0 || s > 1.0)         // I is outside T
+        cout << "I is outside T \n";
+    
+        return idata;
+    t = (uv * wu - uu * wv) / D;
+    if (t < 0.0 || (s + t) > 1.0)  // I is outside T
+        cout << "I is outside T \n";
+    
+         return idata;
+    
+    idata.isIntersection=true;
+    return idata; // I is in T
 }
 
 
