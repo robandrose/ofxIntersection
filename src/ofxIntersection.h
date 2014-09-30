@@ -15,7 +15,7 @@
 class IntersectionData{
 public:
     IntersectionData(){
-        isIntersection=true;
+        isIntersection=false;
         dist=0;
         pos.set(0,0,0);
         dir.set(0,0,0);
@@ -177,6 +177,23 @@ public :
         set(_p0,_p1, _p2);
     }
 
+    void setRandom(ofPoint _pos, float _radius){
+        ofVec3f indexa(ofRandom(-1,1), ofRandom(-1,1), ofRandom(-1,1));
+        indexa.normalize();
+        ofVec3f index(1,0,0);
+        index.cross(indexa);
+        index.scale(_radius);
+        
+        p0.set(_pos+index);
+        index.rotate(120, indexa);
+        p1.set(_pos+index);
+        index.rotate(120, indexa);
+        p2.set(_pos+index);
+        
+        set(p0,p1,p2);
+        
+    }
+    
     void set(ofPoint _p0, ofPoint _p1, ofPoint _p2){
         p0=_p0;
         p1=_p1;
@@ -217,7 +234,7 @@ public :
     }
     
     ofVec3f computeNormal(){
-         normal = seg0.vec.getCrossed(seg2.vec).normalize();
+         normal = seg2.vec.getCrossed(seg0.vec).normalize();
         return normal;
     }
     

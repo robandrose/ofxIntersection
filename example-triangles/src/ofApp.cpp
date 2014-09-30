@@ -5,12 +5,14 @@ void ofApp::setup(){
  
    
     cam.setupPerspective();
-    cam.setVFlip(true);
+    cam.setVFlip(false);
     ofEnableAlphaBlending();
     
-    triangle1.set(ofPoint(-100,-500,-200), ofPoint(200,300,100),ofPoint(-300,200,30));
+    triangle1.set(ofPoint(-100,-500,50), ofPoint(200,300,50),ofPoint(-300,200,30));
     
-    
+    for(int i=0;i<50;i++){
+        triangles[i].setRandom(ofPoint(ofRandom(-500,500),ofRandom(-500,500),ofRandom(-500,500)), ofRandom(50,200));
+    }
 }
 
 //--------------------------------------------------------------
@@ -29,25 +31,27 @@ void ofApp::draw(){
     ofVec3f mousedir=mouseworld2-mouseworld;
     mousedir.normalize();
     
-    
     ofPoint mousefinal=mouseworld+mousedir*600;
-    
-    ray1.set((ofPoint(-500,-300, 0)),  ofVec3f(1,.5,-.20));
+    ray1.set((ofPoint(-300,-300, 0)),  ofVec3f(1,.5,-.20));
+    ray1.set(mouseworld, mousedir);
     
     cam.begin();
+    ofSetColor(255, 0, 0);
     
     ray1.draw();
-    IntersectionData id1=is.RayTriangleIntersection(triangle1, ray1);
-    
-    cout << id1.isIntersection <<"\n";
-    
-    
-    if(id1.isIntersection){
-        ofDrawSphere(id1.pos,5);
+    IntersectionData id;
+    for(int i=0;i<50;i++){
+        id=is.RayTriangleIntersection(triangles[i], ray1);
+        if(id.isIntersection){
+            ofSetColor(255, 0, 0);
+            ofDrawSphere(id.pos,5);
+            ofSetColor(200, 200, 200,100);
+        }else{
+            ofSetColor(100, 200, 100,100);
+        }
+        triangles[i].draw();
     }
-    ofSetColor(100, 200, 100,100);
-    triangle1.draw();
-   cam.end();
+    cam.end();
 }
 
 //--------------------------------------------------------------

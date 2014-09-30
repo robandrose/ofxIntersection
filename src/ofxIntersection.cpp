@@ -34,117 +34,43 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
 
 IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ray& ray){
     
+    // Copied from ofxRayTriangleIntersection
+    
     IntersectionData idata;
-    idata.isIntersection=false;
+    ofVec3f rayStart=ray.getP0();
+    ofVec3f rayDir=ray.getVec();
+    ofVec3f triNorm = triangle.getNormal();
+    float vn = rayDir.dot(triNorm);
     
+    ofVec3f aa = rayStart - triangle.getP0();
+    float xpn = aa.dot(triNorm);
+    float distance = -xpn / vn;
     
-    ofVec3f n = triangle.getNormal();
-    float dotprod = n.dot(ray.getVec());
+    if (distance < 0) return idata; // behind ray origin. fail
     
+    ofPoint hitPos(rayDir.x * distance + rayStart.x,
+                   rayDir.y * distance + rayStart.y,
+                   rayDir.z * distance + rayStart.z);
     
-    cout << dotprod <<"\n";
-    // Why dotprod >0 when toxi had dotprod<0? furhter examinations needed!
+    ofVec3f hit00 = hitPos - triangle.getP0();
+    ofVec3f hit01 = triangle.getP1() - triangle.getP0();
+    ofVec3f cross0 = hit00.cross(hit01);
+    if (cross0.dot(triNorm) > EPS) return idata; // not in triangle. fail
     
-    if (dotprod > 0) {
-        ofVec3f rt = ray.getP0()-triangle.getP0();
-        cout << rt <<"\n";
-        double t = -(double) (n.x * rt.x + n.y * rt.y + n.z * rt.z) / (n.x * ray.getVec().x + n.y * ray.getVec().y + n.z * ray.getVec().z);
-        cout << "t="<<t<<"\n";
-        if (t >= EPS) {
-            ofVec3f pos = ray.getPointAtDistance((float) t);
-            cout << "pos:"<<pos <<"\n";
-            // check if pos is inside triangle
-            if (triangle.containsPoint(pos)) {
-                idata.isIntersection = true;
-                idata.pos = pos;
-                idata.normal = n;
-                idata.dist = (float) t;
-                idata.dir = idata.pos-(ray.getP0()).normalize();
-            }
-        }
-    }
+    ofVec3f hit10 = hitPos - triangle.getP1();
+    ofVec3f hit11 = triangle.getP2() - triangle.getP1();
+    ofVec3f cross1 = hit10.cross(hit11);
+    if (cross1.dot(triNorm) > EPS) return idata; // not in triangle. fail
     
-    return idata;
-    
-    
-    /*
-    
-    ofVec3f    u, v, n;              // triangle vectors
-    ofVec3f    dir, w0, w;           // ray vectors
-    float     r, a, b;              // params to calc ray-plane intersect
-    
-    // get triangle edge vectors and plane normal
-    u= triangle.getSeg0().vec;
-    v =triangle.getSeg2().vec;
-    n = u.cross(v); // cross product
-    
-    if (n.length() == 0){// triangle is degenerate
-        cout << "triangle degenerate \n";
-        return idata;
-    }
-    
-    dir = ray.vec;            // ray direction vector
-    w0 = ray.getP0() - triangle.getP0();
-    a = -n.dot(w0);
-    b = -n.dot(dir);
-    
-    if (fabs(b) < EPS) {     // ray is  parallel to triangle plane
-        cout << "ray is  parallel to triangle plane \n";
-        
-        if (a == 0){                 // ray lies in triangle plane
-            cout << "ray lies in triangle plane \n";
-            
-            return idata;
-            
-        }
-        else {
-            cout << "ray disjoint from plane \n";
-            
-            return idata;   // ray disjoint from plane
-        }
-    }
-    
-    
-    // get intersect point of ray with triangle plane
-    r = a / b;
-    if (r < 0.0){                   // ray goes away from triangle
-        cout << r <<" ";
-        cout << "ray goes away from triangle\n";
-        
-        return idata;                 // => no intersect
-    }
-    
-    // for a segment, also test if (r > 1.0) => no intersect
-    
-    idata.pos = ray.getP0() + r * dir;            // intersect point of ray and plane
-    
-    // is I inside T?
-    float    uu, uv, vv, wu, wv, D;
-    uu = u.dot(u);
-    uv = u.dot(v);
-    vv = v.dot(v);
-    w = idata.pos - triangle.getP0();
-    wu = w.dot(u);
-    wv = w.dot(v);
-    D = uv * uv - uu * vv;
-    
-    // get and test parametric coords
-    float s, t;
-    s = (uv * wv - vv * wu) / D;
-    if (s < 0.0 || s > 1.0)         // I is outside T
-        cout << "I is outside T \n";
-    
-        return idata;
-    t = (uv * wu - uu * wv) / D;
-    if (t < 0.0 || (s + t) > 1.0)  // I is outside T
-        cout << "I is outside T \n";
-    
-         return idata;
+    ofVec3f hit20 = hitPos - triangle.getP2();
+    ofVec3f hit21 = triangle.getP0() - triangle.getP2();
+    ofVec3f cross2 = hit20.cross(hit21);
+    if (cross2.dot(triNorm) > EPS) return idata;; // not in triangle. fail
     
     idata.isIntersection=true;
-    return idata; // I is in T
-    
-    */
+    idata.pos=hitPos;
+    idata.dist=distance;
+
 }
 
 

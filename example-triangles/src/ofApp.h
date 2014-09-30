@@ -22,6 +22,7 @@ class ofApp : public ofBaseApp{
     
     ofxIntersection is;
     Triangle triangle1;
+    Triangle triangles[50];
     Ray ray1;
     
     ofEasyCam cam;
