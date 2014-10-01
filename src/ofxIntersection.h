@@ -75,7 +75,7 @@ class Line
 public:
     Line(){};
     Line(ofPoint _p0, ofPoint _p1){
-        this->set(_p0, _p1);
+        set(_p0, _p1);
     }
     
     void set(ofPoint _p0, ofPoint _p1){
@@ -132,8 +132,19 @@ public:
         p0=_p0;
         normal=_normal;
         normal.normalize();
+        updateDCoeff();
     }
     
+    void setNormal(ofVec3f _normal){
+        normal=_normal;
+        normal.normalize();
+        updateDCoeff();
+    }
+    
+    void setPosition(ofVec3f _p0){
+        p0=_p0;
+        updateDCoeff();    
+    }
     
     ofPoint getP0(){
         return p0;
@@ -141,11 +152,12 @@ public:
     ofVec3f getNormal(){
         return normal;
     }
-    
-    float getDCoeff(){
-        return normal.dot(p0);
+    float updateDCoeff(){
+         d=normal.dot(p0);
     }
-
+    float getDCoeff(){
+        return d;
+    }
     void draw(){
         ofQuaternion rot;
         rot.makeRotate(ofVec3f(0,0,1), this->getNormal());
@@ -161,9 +173,11 @@ public:
     }
    
     
-private:
+    private:
+    
     ofPoint p0;
     ofVec3f normal;
+    float d;
     
     
 };
@@ -171,12 +185,22 @@ private:
 
 class Triangle
 {
+    
 public :
     Triangle(){};
+    
+    
+    
     Triangle(ofPoint _p0, ofPoint _p1, ofPoint _p2){
         set(_p0,_p1, _p2);
     }
-
+    
+    void set(ofMeshFace _face){
+        
+        set(_face.getVertex(0), _face.getVertex(1), _face.getVertex(2));
+        
+    }
+    
     void setRandom(ofPoint _pos, float _radius){
         ofVec3f indexa(ofRandom(-1,1), ofRandom(-1,1), ofRandom(-1,1));
         indexa.normalize();
@@ -208,7 +232,6 @@ public :
         segments[2]=&seg2;
         
         computeNormal();
-        
     }
     
     bool containsPoint(ofPoint p){
@@ -230,24 +253,23 @@ public :
         
         // Check if point is in triangle
         return (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0);
-        
     }
     
     ofVec3f computeNormal(){
-         normal = seg2.vec.getCrossed(seg0.vec).normalize();
+        normal = seg2.vec.getCrossed(seg0.vec).normalize();
         return normal;
     }
     
+    // Getters:
     ofPoint getP0(){return p0;}
     ofPoint getP1(){return p1;}
     ofPoint getP2(){return p2;}
     Line getSeg0(){return seg0;}
     Line getSeg1(){return seg1;}
     Line getSeg2(){return seg2;}
+    ofVec3f getNormal(){return normal;}
 
-    ofVec3f getNormal(){
-        return normal;
-    }
+    // Draw for Debug:
     void draw(){
         ofTriangle(p0,p1,p2);
     }
@@ -321,7 +343,7 @@ public:
 private:
     
     bool containsValue(vector<ofPoint>* points, ofPoint point);
-    
+    ofVec3f LinePlaneIntersectionFast(ofPoint& p0, ofPoint& p1, Plane& plane);
     
     
     

@@ -10,8 +10,8 @@ void ofApp::setup(){
     cam.setVFlip(false);
     ofEnableAlphaBlending();
     
-    for(int i=0;i<50;i++){
-        triangles[i].setRandom(ofPoint(ofRandom(-500,500),ofRandom(-500,500),ofRandom(-500,500)), ofRandom(50,200));
+    for(int i=0;i<NUM_TRIANGLES;i++){
+        triangles[i].setRandom(ofPoint(ofRandom(-500,500),ofRandom(-500,500),ofRandom(-500,500)), ofRandom(20,70));
     }
     
     
@@ -41,7 +41,7 @@ void ofApp::draw(){
     ray.draw();
     mat.begin();
     IntersectionData id;
-    for(int i=0;i<50;i++){
+    for(int i=0;i<NUM_TRIANGLES;i++){
         id=is.RayTriangleIntersection(triangles[i], ray);
         if(id.isIntersection){
             ofSetColor(255, 0, 0);

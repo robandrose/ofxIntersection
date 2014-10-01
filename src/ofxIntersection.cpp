@@ -286,45 +286,68 @@ IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Pla
 }
 
 IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triangle& triangle){
+    
     IntersectionData idata;
+    ofVec3f tp0=triangle.getP0();
+    ofVec3f tp1=triangle.getP1();
+    ofVec3f tp2=triangle.getP2();
     
-    Line lines[3];
-    lines[0]=triangle.getSeg0();
-    lines[1]=triangle.getSeg1();
-    lines[2]=triangle.getSeg2();
+    float dist1=PointPlaneDistance(tp0, plane);
+    float dist2=PointPlaneDistance(tp1, plane);
+    float dist3=PointPlaneDistance(tp2, plane);
     
-    vector<ofPoint>ispoints;
-    bool bintersects=false;
-    IntersectionData id;
+    int pos1=ofSign(dist1);
+    int pos2=ofSign(dist2);
+    int pos3=ofSign(dist3);
     
-    for(int i=0;i<3;i++){
-        id=LinePlaneIntersection(lines[i], plane);
-        if(id.isIntersection){
-            bintersects=true;
-            if(!containsValue(&ispoints,id.pos)){
-                ispoints.push_back(id.pos);
-            };
-        }
-    }
-    
-    if(!bintersects){
+    if(pos1==pos2 && pos1==pos3){
         idata.isIntersection=false;
         return idata;
+    };
+
+    vector<ofPoint>ispoints;
+    bool bintersects=false;
+    ofVec3f ip;
+    
+    
+    if(pos1!=pos2){
+        ip=LinePlaneIntersectionFast(tp0, tp1, plane);
+        if(!containsValue(&ispoints, ip)){
+            ispoints.push_back(ip);
+        };
+    }
+    
+    if(pos2!=pos3){
+        ip=LinePlaneIntersectionFast(tp1, tp2, plane);
+        if(!containsValue(&ispoints, ip)){
+            ispoints.push_back(ip);
+        };
+    }
+    if(pos3!=pos1){
+        ip=LinePlaneIntersectionFast(tp2, tp0, plane);
+        if(!containsValue(&ispoints, ip)){
+            ispoints.push_back(ip);
+        };
     }
     
     idata.isIntersection=true;
     idata.pos.set(ispoints.at(0));
-    idata.dir.set(0,0,0);
-    idata.dist=0;
-    
     if(ispoints.size()==2){
         idata.dir.set(ispoints.at(1));
         idata.dir-=idata.pos;
         idata.dist=idata.dir.length();
     }
-    
     return idata;
+
 }
+
+ofVec3f ofxIntersection::LinePlaneIntersectionFast(ofPoint& p0, ofPoint& p1, Plane& plane){
+    ofVec3f vec(p1-p0);
+    float denom = plane.getNormal().dot(vec);
+    float  u= plane.getNormal().dot(plane.getP0()-p0)/denom;
+    return p0+vec*u;
+}
+
 
 
 bool ofxIntersection::containsValue(vector<ofPoint> *points, ofPoint point){

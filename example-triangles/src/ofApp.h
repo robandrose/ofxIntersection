@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxIntersection.h"
 
-
+#define NUM_TRIANGLES 1000
 class ofApp : public ofBaseApp{
 	public:
 		void setup();
@@ -21,7 +21,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxIntersection is;
-    Triangle triangles[50];
+    Triangle triangles[NUM_TRIANGLES];
     Ray ray;
     
     ofEasyCam cam;
