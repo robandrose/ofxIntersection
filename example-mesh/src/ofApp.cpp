@@ -9,7 +9,7 @@ void ofApp::setup(){
     cam.setupPerspective();
     cam.setVFlip(false);
     ofEnableAlphaBlending();
-    
+    ofEnableDepthTest();
     ofVec3f dir(1,1,0);
     
     for(int i=0;i<NUM_PLANES;i++){
@@ -53,7 +53,7 @@ void ofApp::draw(){
     ofSetColor(ofColor::gray);
     
     
-    //mesh.drawWireframe();
+    mesh.drawWireframe();
     
     mat.begin();
     
@@ -68,7 +68,7 @@ void ofApp::draw(){
         Triangle triangle;
         ofMeshFace face=mesh.getUniqueFaces().at(i);
         triangle.set(face);
-        /*
+        
         id=is.RayTriangleIntersection(triangle, ray);
         if(id.isIntersection){
             ofSetColor(255, 0, 0);
@@ -76,9 +76,9 @@ void ofApp::draw(){
             ofSetColor(200, 200, 200,150);
         }else{
             ofSetColor(100, 200, 100,80);
-        }*/
+        }
         
-       // triangle.draw();
+        triangle.draw();
         for(int pi=0;pi<NUM_PLANES;pi++){
         id=is.PlaneTriangleIntersection(planes[pi], triangle);
         if(id.isIntersection){
@@ -90,7 +90,7 @@ void ofApp::draw(){
         
         
     }
-    ofSetLineWidth(1);
+    ofSetLineWidth(2);
     ofSetColor(ofColor::red);
    
     planecut.draw();
