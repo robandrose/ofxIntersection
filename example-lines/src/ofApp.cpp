@@ -37,7 +37,7 @@ void ofApp::draw(){
     cam.begin();
     
     
-    Line l1;
+    IsLine l1;
     l1.set(ofPoint(-200,-300,-500), ofPoint(300,300,300));
     l1.draw();
     

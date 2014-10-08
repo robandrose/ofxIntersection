@@ -25,8 +25,8 @@ class ofApp : public ofBaseApp{
     ofMesh mesh;
     ofMesh planecut;
     
-    Ray ray;
-    Plane planes[NUM_PLANES];
+    IsRay ray;
+    IsPlane planes[NUM_PLANES];
     
     ofEasyCam cam;
     

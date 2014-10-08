@@ -21,10 +21,10 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxIntersection is;
-    Line lines[10000];
+    IsLine lines[10000];
     ofEasyCam cam;
     ofVec3f n1,n2,n3;
-    Plane p1, p2,p3;
+    IsPlane p1, p2,p3;
     
     ofLight light1;
     ofMaterial mat1;

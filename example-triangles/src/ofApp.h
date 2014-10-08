@@ -21,8 +21,8 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     ofxIntersection is;
-    Triangle triangles[NUM_TRIANGLES];
-    Ray ray;
+    IsTriangle triangles[NUM_TRIANGLES];
+    IsRay ray;
     
     ofEasyCam cam;
     

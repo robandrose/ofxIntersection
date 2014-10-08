@@ -9,7 +9,7 @@
 
 #pragma once
 #include "ofMain.h"
-#define EPS 1.0E-6
+#define EPS 1.0E-10
 
 
 class IntersectionData{
@@ -37,11 +37,12 @@ public:
     }
 };
 
-
-class Ray{
+class IsRay{
 public:
-    Ray(){};
-    Ray(ofPoint _p0, ofVec3f _vec){
+    IsRay(){
+        set(ofPoint(0,0,0),ofVec3f(1,0,0));
+    };
+    IsRay(ofPoint _p0, ofVec3f _vec){
         set(_p0, _vec);
     }
     void set(ofPoint _p0, ofVec3f _vec){
@@ -54,13 +55,9 @@ public:
     ofVec3f getVec(){
         return vec;
     }
-    
-    
     ofVec3f getPointAtDistance(float dist){
         return p0+vec.getScaled(dist);
     }
-    
-    
     ofPoint p0;
     ofVec3f vec;
     
@@ -69,25 +66,23 @@ public:
     }
 };
 
-
-class Line
+class IsLine
 {
 public:
-    Line(){};
-    Line(ofPoint _p0, ofPoint _p1){
+    IsLine(){
+        set(ofPoint(0,0,0), ofPoint(100,0,0));
+    };
+    IsLine(ofPoint _p0, ofPoint _p1){
         set(_p0, _p1);
     }
-    
     void set(ofPoint _p0, ofPoint _p1){
         p0=_p0;
         p1=_p1;
         vec.set(p1-p0);
     }
-    
     float magintude(){
         return vec.length();
     }
-    
     ofPoint getP0(){
         return p0;
     }
@@ -100,7 +95,6 @@ public:
     void draw(){
         ofLine(p0,p1);
     }
-
     ofPoint p0;
     ofPoint p1;
     ofVec3f vec;
@@ -109,14 +103,13 @@ protected:
     
 };
 
-class Plane{
+class IsPlane{
 public:
-    Plane(){
+    IsPlane(){
         p0.set(0,0,0);
         normal.set(0,0,1);
-        
     };
-    Plane(ofPoint _p0, ofVec3f _normal){
+    IsPlane(ofPoint _p0, ofVec3f _normal){
         set(_p0, _normal);
     }
     void set(ofPoint _p0, ofPoint _p1, ofPoint _p2){
@@ -152,11 +145,11 @@ public:
     ofVec3f getNormal(){
         return normal;
     }
-    float updateDCoeff(){
-         d=normal.dot(p0);
-    }
     float getDCoeff(){
         return d;
+    }
+    float updateDCoeff(){
+         d=normal.dot(p0);
     }
     void draw(){
         ofQuaternion rot;
@@ -171,66 +164,50 @@ public:
         ofPopMatrix();
         ofPopMatrix();
     }
-   
     
     private:
-    
     ofPoint p0;
     ofVec3f normal;
     float d;
-    
-    
 };
 
 
-class Triangle
+class IsTriangle
 {
     
 public :
-    Triangle(){};
+    IsTriangle(){};
     
-    
-    
-    Triangle(ofPoint _p0, ofPoint _p1, ofPoint _p2){
+    IsTriangle(ofPoint _p0, ofPoint _p1, ofPoint _p2){
         set(_p0,_p1, _p2);
     }
-    
     void set(ofMeshFace _face){
-        
         set(_face.getVertex(0), _face.getVertex(1), _face.getVertex(2));
-        
     }
-    
     void setRandom(ofPoint _pos, float _radius){
         ofVec3f indexa(ofRandom(-1,1), ofRandom(-1,1), ofRandom(-1,1));
         indexa.normalize();
         ofVec3f index(1,0,0);
         index.cross(indexa);
         index.scale(_radius);
-        
         p0.set(_pos+index);
         index.rotate(120, indexa);
         p1.set(_pos+index);
         index.rotate(120, indexa);
         p2.set(_pos+index);
-        
         set(p0,p1,p2);
-        
     }
     
     void set(ofPoint _p0, ofPoint _p1, ofPoint _p2){
         p0=_p0;
         p1=_p1;
         p2=_p2;
-        
         seg0.set(p0, p1);
         seg1.set(p1, p2);
         seg2.set(p2, p0);
-        
         segments[0]=&seg0;
         segments[1]=&seg1;
         segments[2]=&seg2;
-        
         computeNormal();
     }
     
@@ -260,41 +237,58 @@ public :
         return normal;
     }
     
+    
     // Getters:
     ofPoint getP0(){return p0;}
     ofPoint getP1(){return p1;}
     ofPoint getP2(){return p2;}
-    Line getSeg0(){return seg0;}
-    Line getSeg1(){return seg1;}
-    Line getSeg2(){return seg2;}
+    IsLine getSeg0(){return seg0;}
+    IsLine getSeg1(){return seg1;}
+    IsLine getSeg2(){return seg2;}
     ofVec3f getNormal(){return normal;}
 
     // Draw for Debug:
     void draw(){
         ofTriangle(p0,p1,p2);
     }
-    
+
 private:
     ofPoint p0;
     ofPoint p1;
     ofPoint p2;
     ofVec3f normal;
     
-    Line seg0;
-    Line seg1;
-    Line seg2;
+    IsLine seg0;
+    IsLine seg1;
+    IsLine seg2;
     
-    Line* segments[3];
-    
-    
-};
-
-
-class Rectangle{
+    IsLine* segments[3];
     
 };
 
-class Ellipse{
+
+class IsRectangle{
+    
+};
+
+class IsPolygon{
+    void set(vector<ofPoint> points){
+        
+    }
+    void addPoint(ofPoint _p){
+        points.push_back(_p);
+        
+    }
+    
+private:
+    vector<ofPoint>points;
+    vector<IsTriangle>triangles;
+    IsPlane plane;
+    ofVec3f normal;
+    
+};
+
+class IsEllipse{
 private:
     ofPoint center;
     float radiusX;
@@ -302,11 +296,15 @@ private:
     
 };
 
-class Circle{
+class IsCircle{
     
 };
 
-class Terrain{
+class IsAABB{
+    
+};
+
+class IsTerrain{
     
 };
 
@@ -318,24 +316,24 @@ public:
     virtual ~ofxIntersection(){};
 
     // Ray
-    IntersectionData RayPlaneIntersection(Ray& ray, Plane& plane);
-    IntersectionData RayTriangleIntersection(Triangle& triangle, Ray& ray);
+    IntersectionData RayPlaneIntersection(IsRay& ray, IsPlane& plane);
+    IntersectionData RayTriangleIntersection(IsTriangle& triangle, IsRay& ray);
 
     // Line
-    IntersectionData LinePlaneIntersection(Line& line, Plane& plane);
-    IntersectionData LineLineIntersection(Line& line1, Line& line2);
-    IntersectionData PointLineDistance(ofPoint& point, Line& line);
+    IntersectionData LinePlaneIntersection(IsLine& line, IsPlane& plane);
+    IntersectionData LineLineIntersection(IsLine& line1, IsLine& line2);
+    IntersectionData PointLineDistance(ofPoint& point, IsLine& line);
     
     // Plane
-    IntersectionData PlanePlaneIntersection(Plane& plane1, Plane& plane2);
-    IntersectionData PlanePlanePlaneIntersection(Plane& plane1, Plane& plane2, Plane& plane3);
+    IntersectionData PlanePlaneIntersection(IsPlane& plane1, IsPlane& plane2);
+    IntersectionData PlanePlanePlaneIntersection(IsPlane& plane1, IsPlane& plane2, IsPlane& plane3);
     
-    IntersectionData PlaneTriangleIntersection(Plane& plane, Triangle& triangle);
-    float PointPlaneDistance(ofPoint& point, Plane& plane);
+    IntersectionData PlaneTriangleIntersection(IsPlane& plane, IsTriangle& triangle);
+    float PointPlaneDistance(ofPoint& point, IsPlane& plane);
     
     
     // Triangle
-    IntersectionData TriangleTriangleIntersection(Triangle& triangle1, Triangle& triangle2){};
+    IntersectionData TriangleTriangleIntersection(IsTriangle& triangle1, IsTriangle& triangle2){};
     
     
     
@@ -343,7 +341,7 @@ public:
 private:
     
     bool containsValue(vector<ofPoint>* points, ofPoint point);
-    ofVec3f LinePlaneIntersectionFast(ofPoint& p0, ofPoint& p1, Plane& plane);
+    ofVec3f LinePlaneIntersectionFast(ofPoint& p0, ofPoint& p1, IsPlane& plane);
     
     
     

@@ -13,7 +13,7 @@ ofxIntersection::ofxIntersection(){
 }
 
 /************** Ray  ************/
-IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
+IntersectionData ofxIntersection::RayPlaneIntersection(IsRay&ray, IsPlane &plane){
     IntersectionData idata;
     
     float u=0;
@@ -32,7 +32,7 @@ IntersectionData ofxIntersection::RayPlaneIntersection(Ray&ray, Plane &plane){
     
 }
 
-IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ray& ray){
+IntersectionData ofxIntersection::RayTriangleIntersection(IsTriangle& triangle, IsRay& ray){
     
     // Copied from ofxRayTriangleIntersection
     
@@ -75,7 +75,7 @@ IntersectionData ofxIntersection::RayTriangleIntersection(Triangle& triangle, Ra
 
 
 
-float ofxIntersection::PointPlaneDistance(ofPoint &point, Plane &plane){
+float ofxIntersection::PointPlaneDistance(ofPoint &point, IsPlane &plane){
     return plane.getNormal().dot((point-plane.getP0()));
 }
 
@@ -83,7 +83,7 @@ float ofxIntersection::PointPlaneDistance(ofPoint &point, Plane &plane){
 
 /************** Line  ************/
 
-IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane){
+IntersectionData ofxIntersection::LinePlaneIntersection(IsLine& line, IsPlane& plane){
     IntersectionData idata;
     
     float dist1=PointPlaneDistance(line.p0, plane);
@@ -119,7 +119,7 @@ IntersectionData ofxIntersection::LinePlaneIntersection(Line& line, Plane& plane
 
 
 
-IntersectionData ofxIntersection::LineLineIntersection(Line& line1, Line& line2){
+IntersectionData ofxIntersection::LineLineIntersection(IsLine& line1, IsLine& line2){
     IntersectionData idata;
     
     ofPoint p13,p43,p21;
@@ -186,7 +186,7 @@ IntersectionData ofxIntersection::LineLineIntersection(Line& line1, Line& line2)
 }
 
 
-IntersectionData ofxIntersection::PointLineDistance(ofPoint& point, Line& line){
+IntersectionData ofxIntersection::PointLineDistance(ofPoint& point, IsLine& line){
     float u;
     ofVec3f dist;
     IntersectionData idata;
@@ -219,7 +219,7 @@ IntersectionData ofxIntersection::PointLineDistance(ofPoint& point, Line& line){
 /************** Plane  ************/
 
 
-IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& plane2){
+IntersectionData ofxIntersection::PlanePlaneIntersection(IsPlane &plane1, IsPlane& plane2){
     IntersectionData idata;
     
     ofVec3f n1=plane1.getNormal();
@@ -254,7 +254,7 @@ IntersectionData ofxIntersection::PlanePlaneIntersection(Plane &plane1, Plane& p
 
 
 
-IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Plane &plane2, Plane &plane3){
+IntersectionData ofxIntersection::PlanePlanePlaneIntersection(IsPlane &plane1, IsPlane &plane2, IsPlane &plane3){
 
     
     IntersectionData idata;
@@ -285,7 +285,7 @@ IntersectionData ofxIntersection::PlanePlanePlaneIntersection(Plane &plane1, Pla
     
 }
 
-IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triangle& triangle){
+IntersectionData ofxIntersection::PlaneTriangleIntersection(IsPlane& plane, IsTriangle& triangle){
     
     IntersectionData idata;
     ofVec3f tp0=triangle.getP0();
@@ -309,14 +309,12 @@ IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triang
     bool bintersects=false;
     ofVec3f ip;
     
-    
     if(pos1!=pos2){
         ip=LinePlaneIntersectionFast(tp0, tp1, plane);
         if(!containsValue(&ispoints, ip)){
             ispoints.push_back(ip);
         };
     }
-    
     if(pos2!=pos3){
         ip=LinePlaneIntersectionFast(tp1, tp2, plane);
         if(!containsValue(&ispoints, ip)){
@@ -332,19 +330,21 @@ IntersectionData ofxIntersection::PlaneTriangleIntersection(Plane& plane, Triang
     
     idata.isIntersection=true;
     idata.pos.set(ispoints.at(0));
+    
     if(ispoints.size()==2){
         idata.dir.set(ispoints.at(1));
         idata.dir-=idata.pos;
         idata.dist=idata.dir.length();
     }
+    
     return idata;
 
 }
 
-ofVec3f ofxIntersection::LinePlaneIntersectionFast(ofPoint& p0, ofPoint& p1, Plane& plane){
+ofVec3f ofxIntersection::LinePlaneIntersectionFast(ofPoint& p0, ofPoint& p1, IsPlane& plane){
     ofVec3f vec(p1-p0);
     float denom = plane.getNormal().dot(vec);
-    float  u= plane.getNormal().dot(plane.getP0()-p0)/denom;
+    float u= plane.getNormal().dot(plane.getP0()-p0)/denom;
     return p0+vec*u;
 }
 

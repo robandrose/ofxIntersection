@@ -65,7 +65,7 @@ void ofApp::draw(){
     planecut.setMode(OF_PRIMITIVE_LINES);
     
     for(int i=0;i<mesh.getUniqueFaces().size();i++){
-        Triangle triangle;
+        IsTriangle triangle;
         ofMeshFace face=mesh.getUniqueFaces().at(i);
         triangle.set(face);
         
