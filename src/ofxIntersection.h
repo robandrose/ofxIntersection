@@ -268,7 +268,72 @@ private:
 
 
 class IsRectangle{
+
+    public :
+    IsRectangle(){
+        p0.set(0,0,0);
+        width=100;
+        height=100;
+        rect.set(p0,width,height);
+        normal.set(0,0,1);
+    };
+    IsRectangle(ofPoint _p0, ofVec3f _normal, float _width, float _height){
+        set(_p0, _normal, _width, _height);
+    }
+    void set(ofPoint _p0, ofVec3f _normal, float _width, float _height){
+        p0=_p0;
+        width=_width;
+        height=_height;
+        rect.set(p0, width,height);
+        normal=_normal;
+        normal.normalize();
+        updateDCoeff();
+    }
     
+    void setNormal(ofVec3f _normal){
+        normal=_normal;
+        normal.normalize();
+        updateDCoeff();
+    }
+    
+    void setPosition(ofVec3f _p0){
+        p0=_p0;
+        updateDCoeff();
+    }
+    
+    ofPoint getP0(){
+        return p0;
+    }
+    ofVec3f getNormal(){
+        return normal;
+    }
+    float getDCoeff(){
+        return d;
+    }
+    float updateDCoeff(){
+        d=normal.dot(p0);
+    }
+    void draw(){
+        ofQuaternion rot;
+        rot.makeRotate(ofVec3f(0,0,1), this->getNormal());
+        ofMatrix4x4 rotmat;
+        rot.get(rotmat);
+        ofPushMatrix();
+        ofTranslate(p0);
+        ofPushMatrix();
+        ofMultMatrix(rotmat);
+        ofRect(rect);
+        ofPopMatrix();
+        ofPopMatrix();
+    }
+    
+    private:
+    float width;
+    float height;
+    ofRectangle rect;
+    ofPoint p0;
+    ofVec3f normal;
+    float d;
 };
 
 class IsPolygon{
