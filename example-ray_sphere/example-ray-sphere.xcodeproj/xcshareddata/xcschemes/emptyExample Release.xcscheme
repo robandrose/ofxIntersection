@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-               BuildableName = "example-mesh.app"
+               BuildableName = "example-ray-sphere.app"
                BlueprintName = "example-ray-sphere"
                ReferencedContainer = "container:example-ray-sphere.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "example-mesh.app"
+            BuildableName = "example-ray-sphere.app"
             BlueprintName = "example-ray-sphere"
             ReferencedContainer = "container:example-ray-sphere.xcodeproj">
          </BuildableReference>
@@ -52,7 +52,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "example-mesh.app"
+            BuildableName = "example-ray-sphere.app"
             BlueprintName = "example-ray-sphere"
             ReferencedContainer = "container:example-ray-sphere.xcodeproj">
          </BuildableReference>
@@ -70,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "example-mesh.app"
+            BuildableName = "example-ray-sphere.app"
             BlueprintName = "example-ray-sphere"
             ReferencedContainer = "container:example-ray-sphere.xcodeproj">
          </BuildableReference>

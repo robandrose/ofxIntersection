@@ -365,6 +365,17 @@ class IsCircle{
     
 };
 
+class IsSphere{
+    // TODO: Create Sphere Class to intersect with
+    // –ray
+    // – closest point to other point
+    // Plane
+    // etc.
+    
+    
+};
+
+
 class IsAABB{
     
 };
