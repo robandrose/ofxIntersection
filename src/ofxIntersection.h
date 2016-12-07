@@ -249,7 +249,7 @@ public :
 
     // Draw for Debug:
     void draw(){
-        ofTriangle(p0,p1,p2);
+        ofDrawTriangle(p0,p1,p2);
     }
 
 private:
@@ -274,7 +274,7 @@ class IsRectangle{
         p0.set(0,0,0);
         width=100;
         height=100;
-        rect.set(p0,width,height);
+        rect.set(p0.x, p0.y,width,height);
         normal.set(0,0,1);
     };
     IsRectangle(ofPoint _p0, ofVec3f _normal, float _width, float _height){
@@ -284,7 +284,7 @@ class IsRectangle{
         p0=_p0;
         width=_width;
         height=_height;
-        rect.set(p0, width,height);
+        rect.set(p0.x, p0.y, width,height);
         normal=_normal;
         normal.normalize();
         updateDCoeff();
@@ -314,6 +314,7 @@ class IsRectangle{
         d=normal.dot(p0);
     }
     void draw(){
+        
         ofQuaternion rot;
         rot.makeRotate(ofVec3f(0,0,1), this->getNormal());
         ofMatrix4x4 rotmat;
@@ -322,9 +323,10 @@ class IsRectangle{
         ofTranslate(p0);
         ofPushMatrix();
         ofMultMatrix(rotmat);
-        ofRect(rect);
+        ofDrawPlane(width,height);
         ofPopMatrix();
         ofPopMatrix();
+
     }
     
     private:
@@ -406,6 +408,9 @@ public:
     
     IntersectionData PlaneTriangleIntersection(IsPlane& plane, IsTriangle& triangle);
     float PointPlaneDistance(ofPoint& point, IsPlane& plane);
+    
+    IntersectionData PlaneRectangleIntersection(IsPlane &plane, IsRectangle& rect);
+    
     
     
     // Triangle

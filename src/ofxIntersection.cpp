@@ -254,6 +254,63 @@ IntersectionData ofxIntersection::PlanePlaneIntersection(IsPlane &plane1, IsPlan
 
 
 
+
+
+IntersectionData ofxIntersection::PlaneRectangleIntersection(IsPlane &plane, IsRectangle& rect){
+    IntersectionData idata;
+    
+    ofVec3f n1=plane.getNormal();
+    ofVec3f n2=rect.getNormal();
+    float d1=plane.getDCoeff();
+    float d2=rect.getDCoeff();
+    
+    // Check if planes are parallel, if so return false:
+    ofVec3f dir=plane.getNormal().cross(rect.getNormal());
+    
+    if(dir.length() < EPS){
+        idata.isIntersection=false;
+        return idata;
+    }
+    
+    idata.isIntersection=true;
+    // Direction of intersection is the cross product of the two normals:
+    dir.normalize();
+    
+    // Thank you Toxi!
+    float offDiagonal = n1.dot(n2);
+    double det = 1.0 / (1 - offDiagonal * offDiagonal);
+    double a = (d1 - d2 * offDiagonal) * det;
+    double b = (d2 - d1 * offDiagonal) * det;
+    ofVec3f anchor = n1.scale((float) a)+n2.scale((float) b);
+    
+    
+    // TODO: find intersections wiht edges of Rectangle
+    
+    IsLine edges[4];
+    
+    for(int i=0;i<4;i++){
+    
+    //    IsLine[i].set(rect.getPos()-rect.width);
+        
+        
+        
+    }
+    
+    
+    
+    
+    idata.pos=anchor;
+    idata.dir=dir;
+    
+    
+    
+    
+    
+    return idata;
+}
+
+
+
 IntersectionData ofxIntersection::PlanePlanePlaneIntersection(IsPlane &plane1, IsPlane &plane2, IsPlane &plane3){
 
     
@@ -277,6 +334,8 @@ IntersectionData ofxIntersection::PlanePlanePlaneIntersection(IsPlane &plane1, I
         idata.isIntersection=false;
         return idata;
     }
+    
+    
 
     idata.isIntersection=true;
     idata.pos=  (d1*cross1+d2*cross2+d3*cross3)/det;
