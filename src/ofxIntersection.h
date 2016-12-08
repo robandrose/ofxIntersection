@@ -37,34 +37,6 @@ public:
     }
 };
 
-class IsRay{
-public:
-    IsRay(){
-        set(ofPoint(0,0,0),ofVec3f(1,0,0));
-    };
-    IsRay(ofPoint _p0, ofVec3f _vec){
-        set(_p0, _vec);
-    }
-    void set(ofPoint _p0, ofVec3f _vec){
-        p0=_p0;
-        vec=_vec;
-    }
-    ofPoint getP0(){
-        return p0;
-    }
-    ofVec3f getVec(){
-        return vec;
-    }
-    ofVec3f getPointAtDistance(float dist){
-        return p0+vec.getScaled(dist);
-    }
-    ofPoint p0;
-    ofVec3f vec;
-    
-    void draw(){
-        ofLine(p0,p0+vec.getScaled(1000));
-    }
-};
 
 class IsLine
 {
@@ -99,9 +71,45 @@ public:
     ofPoint p1;
     ofVec3f vec;
 protected:
-
+    
     
 };
+
+class IsRay{
+public:
+    IsRay(){
+        set(ofPoint(0,0,0),ofVec3f(1,0,0));
+    };
+    IsRay(ofPoint _p0, ofVec3f _vec){
+        set(_p0, _vec);
+    }
+    void set(ofPoint _p0, ofVec3f _vec){
+        p0=_p0;
+        vec=_vec;
+    }
+    ofPoint getP0(){
+        return p0;
+    }
+    ofVec3f getVec(){
+        return vec;
+    }
+    ofVec3f getPointAtDistance(float dist){
+        return p0+vec*dist;
+    }
+    ofPoint p0;
+    ofVec3f vec;
+    
+    void draw(float length){
+        ofDrawLine(p0-vec*length/2,p0+vec*length/2);
+    }
+    
+    IsLine asLine(float length){
+        IsLine line(ofPoint(p0-vec*length/2.0f), ofPoint(p0+vec*length/2.0f));
+        return line;
+    }
+};
+
+
 
 class IsPlane{
 public:
