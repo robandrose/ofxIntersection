@@ -12,6 +12,7 @@
 #define EPS 1.0E-10
 
 
+
 class IntersectionData{
 public:
     IntersectionData(){
@@ -37,36 +38,8 @@ public:
     }
 };
 
-class IsRay{
-public:
-    IsRay(){
-        set(ofPoint(0,0,0),ofVec3f(1,0,0));
-    };
-    IsRay(ofPoint _p0, ofVec3f _vec){
-        set(_p0, _vec);
-    }
-    void set(ofPoint _p0, ofVec3f _vec){
-        p0=_p0;
-        vec=_vec;
-    }
-    ofPoint getP0(){
-        return p0;
-    }
-    ofVec3f getVec(){
-        return vec;
-    }
-    ofVec3f getPointAtDistance(float dist){
-        return p0+vec.getScaled(dist);
-    }
-    ofPoint p0;
-    ofVec3f vec;
-    
-    void draw(){
-        ofLine(p0,p0+vec.getScaled(1000));
-    }
-};
 
-class IsLine
+ class IsLine
 {
 public:
     IsLine(){
@@ -93,7 +66,7 @@ public:
         return vec;
     }
     void draw(){
-        ofLine(p0,p1);
+        ofDrawLine(p0,p1);
     }
     ofPoint p0;
     ofPoint p1;
@@ -102,6 +75,53 @@ protected:
 
     
 };
+
+
+class IsRay{
+public:
+    IsRay(){
+        set(ofPoint(0,0,0),ofVec3f(1,0,0));
+    };
+    IsRay(ofPoint _p0, ofVec3f _vec){
+        set(_p0, _vec);
+    }
+    void set(ofPoint _p0, ofVec3f _vec){
+        p0=_p0;
+        vec=_vec;
+    }
+    ofPoint getP0(){
+        return p0;
+    }
+    void setP0(ofPoint p){
+        p0.set(p);
+    }
+    
+    ofVec3f getVec(){
+        return vec;
+    }
+    
+    ofVec3f getPointAtDistance(float dist){
+        return p0+vec.getScaled(dist);
+    }
+    
+    ofPoint p0;
+    
+    ofVec3f vec;
+    
+    void draw(){
+        ofDrawLine(p0,p0+vec.getScaled(1000));
+    }
+    void drawCentered(float length=500){
+        ofDrawLine(p0-vec*length, p0+vec*length);
+    }
+    
+    IsLine asLine(float length){
+        return IsLine(getPointAtDistance(-length/2), getPointAtDistance(length/2));
+    }
+    
+};
+
+
 
 class IsPlane{
 public:
@@ -396,7 +416,9 @@ public:
     // Ray
     IntersectionData RayPlaneIntersection(IsRay& ray, IsPlane& plane);
     IntersectionData RayTriangleIntersection(IsTriangle& triangle, IsRay& ray);
+   // IntersectionData RayRayIntersection(IsRay& ray1, IsRay& ray2);
 
+    
     // Line
     IntersectionData LinePlaneIntersection(IsLine& line, IsPlane& plane);
     IntersectionData LineLineIntersection(IsLine& line1, IsLine& line2);

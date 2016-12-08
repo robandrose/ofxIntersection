@@ -75,6 +75,10 @@ IntersectionData ofxIntersection::RayTriangleIntersection(IsTriangle& triangle, 
 
 
 
+
+
+
+
 float ofxIntersection::PointPlaneDistance(ofPoint &point, IsPlane &plane){
     return plane.getNormal().dot((point-plane.getP0()));
 }
@@ -291,7 +295,6 @@ IntersectionData ofxIntersection::PlaneRectangleIntersection(IsPlane &plane, IsR
     for(int i=0;i<4;i++){
     
     //    IsLine[i].set(rect.getPos()-rect.width);
-        
         
         
     }
